@@ -55,14 +55,16 @@ The boilerplate project has one user, two payment types, two product types, two 
 
 Review that code with your team and if the team decides that they want more seeded data, add the new objects now.
 
-### Generating the Database
+### Building your database
 
-Once your appsettings are updated and you've entered in some seed data, you should generate your database.
+Once your appsettings are updated and you've entered in some seed data, you should build your database.
 
+1. In SQL Server Object Explorer, create a new database called `BangazonSite`.
+1. This should already be linked in your `appsettings.json` file, but double check just to make sure.
 1. Go to the Package Manager Console in Visual Studio.
 1. Use the `Add-Migration BangazonTables` command.
 1. Once Visual Studio shows you the migration file, execute `Update-Database` to generate your tables.
-1. Use the Azure Data Studio to verify that everything worked as expected.
+1. Use the SQL Server Object Explorer to verify that everything worked as expected.
 
 ### Submit a PR
 
