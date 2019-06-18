@@ -117,6 +117,7 @@ namespace Bangazon.Controllers
             currentOrder.UserId = user.Id;
             currentOrder.DateCompleted = DateTime.Now;
 
+
             OrderPaymentViewModel vm = new OrderPaymentViewModel()
             {
                 FinalOrder = currentOrder,
@@ -133,17 +134,17 @@ namespace Bangazon.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,DateCreated,DateCompleted,UserId,PaymentTypeId")] OrderPaymentViewModel vm)
+        public async Task<IActionResult> Edit(int id, OrderPaymentViewModel vm)
         {
-            if (id != vm.FinalOrder.OrderId)
-            { 
-                return NotFound();
-            }
+            ModelState.Remove("FinalOrder.User");
+            ModelState.Remove("FinalOrder.UserId");
+            ApplicationUser user = await GetCurrentUserAsync();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    vm.FinalOrder.UserId = user.Id;
                     _context.Update(vm.FinalOrder);
                     await _context.SaveChangesAsync();
                 }
@@ -160,7 +161,6 @@ namespace Bangazon.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ApplicationUser user = await GetCurrentUserAsync();
 
             vm.ThePaymentTypes = new SelectList(_context.PaymentType.Where(c => c.UserId == user.Id), "PaymentTypeId", "AccountNumber");
 
