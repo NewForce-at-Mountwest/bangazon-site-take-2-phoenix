@@ -159,7 +159,9 @@ namespace Bangazon.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                ViewData["Orderzzz"] = vm.FinalOrder;
+
+                return View("Views/Orders/SuccessfulCheckout.cshtml");
             }
 
             vm.ThePaymentTypes = new SelectList(_context.PaymentType.Where(c => c.UserId == user.Id), "PaymentTypeId", "AccountNumber");
