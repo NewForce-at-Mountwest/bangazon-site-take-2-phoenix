@@ -8,10 +8,10 @@ namespace Bangazon.Models.OrderViewModels
 {
     public class OrderPaymentViewModel
     {
-        public Order Order { get; set; }
+        public Order FinalOrder { get; set; }
 
 
-        public SelectList PaymentTypes{ get; set;  }
+        public SelectList ThePaymentTypes{ get; set;  }
 
 
 

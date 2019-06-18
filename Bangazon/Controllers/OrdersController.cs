@@ -107,21 +107,20 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
-            if (order == null)
+            var currentOrder = await _context.Order.FindAsync(id);
+            if (currentOrder == null)
             {
                 return NotFound();
             }
 
             ApplicationUser user = await GetCurrentUserAsync();
-            order.UserId = user.Id;
-            order.OrderId = id.GetValueOrDefault(); 
-            order.DateCompleted = DateTime.Now;
+            currentOrder.UserId = user.Id;
+            currentOrder.DateCompleted = DateTime.Now;
 
             OrderPaymentViewModel vm = new OrderPaymentViewModel()
             {
-                Order = order,
-                PaymentTypes = new SelectList(_context.PaymentType.Where(c => c.UserId == user.Id), "PaymentTypeId", "AccountNumber", "Description")
+                FinalOrder = currentOrder,
+                ThePaymentTypes = new SelectList(_context.PaymentType.Where(c => c.UserId == user.Id), "PaymentTypeId", "AccountNumber")
             };
 
 
@@ -136,8 +135,8 @@ namespace Bangazon.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("OrderId,DateCreated,DateCompleted,UserId,PaymentTypeId")] OrderPaymentViewModel vm)
         {
-            if (id != vm.Order.OrderId)
-            {
+            if (id != vm.FinalOrder.OrderId)
+            { 
                 return NotFound();
             }
 
@@ -145,12 +144,12 @@ namespace Bangazon.Controllers
             {
                 try
                 {
-                    _context.Update(vm);
+                    _context.Update(vm.FinalOrder);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(vm.Order.OrderId))
+                    if (!OrderExists(vm.FinalOrder.OrderId))
                     {
                         return NotFound();
                     }
@@ -163,9 +162,9 @@ namespace Bangazon.Controllers
             }
             ApplicationUser user = await GetCurrentUserAsync();
 
-            vm.PaymentTypes = new SelectList(_context.PaymentType.Where(c => c.UserId == user.Id), "PaymentTypeId", "AccountNumber");
+            vm.ThePaymentTypes = new SelectList(_context.PaymentType.Where(c => c.UserId == user.Id), "PaymentTypeId", "AccountNumber");
 
-            ;
+            
             return View(vm);
         }
 
