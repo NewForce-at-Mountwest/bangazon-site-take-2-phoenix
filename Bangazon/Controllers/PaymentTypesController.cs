@@ -162,7 +162,7 @@ namespace Bangazon.Controllers
             {
                 ViewData["ErrorMessage"] =
                     "Delete failed. Try again, and if the problem persists " +
-                    "see Russell Miller because he did this. Its probably because this Payment Type has been used on a completed Order";
+                    "see Russell Miller, but if this paymentTypeId is on an existing order, then it cannot be deleted ";
             }
 
 
