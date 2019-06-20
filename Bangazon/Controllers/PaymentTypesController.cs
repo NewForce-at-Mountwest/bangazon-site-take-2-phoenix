@@ -118,32 +118,32 @@ namespace Bangazon.Controllers
         //        return NotFound();
         //    }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(paymentType);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!PaymentTypeExists(paymentType.PaymentTypeId))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
+//            if (ModelState.IsValid)
+//            {
+//                try
+//                {
+//                    _context.Update(paymentType);
+//                    await _context.SaveChangesAsync();
+//    }
+//                catch (DbUpdateConcurrencyException)
+//                {
+//                    if (!PaymentTypeExists(paymentType.PaymentTypeId))
+//                    {
+//                        return NotFound();
+//}
+//                    else
+//                    {
+//                        throw;
+//                    }
+//                }
+//                return RedirectToAction(nameof(Index));
+//            }
         //    ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", paymentType.UserId);
         //    return View(paymentType);
         //}
 
         // GET: PaymentTypes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -151,12 +151,21 @@ namespace Bangazon.Controllers
             }
 
             var paymentType = await _context.PaymentType
+                .AsNoTracking()
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.PaymentTypeId == id);
             if (paymentType == null)
             {
                 return NotFound();
             }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                    "Delete failed. Try again, and if the problem persists " +
+                    "see Russell Miller, but if this paymentTypeId is on an existing order, then it cannot be deleted ";
+            }
+
+
 
             return View(paymentType);
         }
@@ -167,10 +176,26 @@ namespace Bangazon.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var paymentType = await _context.PaymentType.FindAsync(id);
-            _context.PaymentType.Remove(paymentType);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (paymentType == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                _context.PaymentType.Remove(paymentType);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
+         
         }
+
+        //Check if Payment Type Eists
 
         private bool PaymentTypeExists(int id)
         {
