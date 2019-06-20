@@ -31,15 +31,20 @@ namespace Bangazon.Controllers
 
         // GET: Products
         [Authorize]
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, string productSearch)
         {
-            ViewData["CurrentFilter"] = searchString;
+            ViewData["searchCity"] = searchString;
+            ViewData["searchProduct"] = productSearch;
 
             var product = from s in _context.Product
                            select s;
             if (!String.IsNullOrEmpty(searchString))
             {
                 product = product.Where(s => s.City.Contains(searchString));
+            }
+            if (!String.IsNullOrEmpty(productSearch))
+            {
+                product = product.Where(s => s.Title.Contains(productSearch));
             }
             return View(await product.ToListAsync());
         }
