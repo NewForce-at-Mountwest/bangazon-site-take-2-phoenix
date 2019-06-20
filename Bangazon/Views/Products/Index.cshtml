@@ -9,20 +9,12 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            Search by City: <input type="text" name="SearchString" value="@ViewData["searchCity"]" />
-            <input type="submit" value="Search by City" class="btn btn-default" /> |
+            Search by City or Product: <input type="text" name="SearchTerm" value="@ViewData["search"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
         </p>
     </div>
 </form>
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Search by Product: <input type="text" name="ProductSearch" value="@ViewData["searchProduct"]" />
-            <input type="submit" value="Search Products" class="btn btn-default" /> |
-            <a asp-action="Index">Show All</a>
-        </p>
-    </div>
-</form>
+
 <table class="table">
     <thead>
         <tr>
