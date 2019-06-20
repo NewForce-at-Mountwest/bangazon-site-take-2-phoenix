@@ -1,0 +1,16 @@
+﻿@model Bangazon.Models.OrderViewModels.OrderPaymentViewModel
+
+@{
+    ViewData["Title"] = "SuccessfulCheckout";
+    var link = ViewData["Orderzzz"];
+}
+
+    <h1>Thank You For Your Purchase</h1>
+
+<div>
+    <h2>Your order will be proccessed shortly</h2>
+    <hr />      
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
