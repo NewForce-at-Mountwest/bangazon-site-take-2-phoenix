@@ -40,6 +40,8 @@ namespace Bangazon.Models
 
         public bool Active { get; set; }
 
+        public bool localDeliveryAvailable { get; set; }
+
         [Required]
         public ApplicationUser User { get; set; }
 
